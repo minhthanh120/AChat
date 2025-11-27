@@ -1,0 +1,102 @@
+<div class="p-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-semibold text-[#000000]">New Group</h2>
+        <button 
+            (click)="onClose()" 
+            class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#f0f2f5] transition-colors text-[#707579]">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Group Name Input -->
+    <div class="mb-5">
+        <label for="groupName" class="block mb-2 text-sm font-medium text-[#000000]">Group Name</label>
+        <input 
+            [(ngModel)]="newGroup.groupName" 
+            [ngModelOptions]="{standalone: true}" 
+            type="text" 
+            id="groupName" 
+            placeholder="Enter group name"
+            class="w-full px-4 py-3 bg-[#f0f2f5] border-0 rounded-xl text-[15px] focus:bg-white focus:ring-2 focus:ring-[#3390ec] focus:outline-none transition-all">
+    </div>
+
+    <!-- Member Search -->
+    <div class="mb-5">
+        <label for="memberSearch" class="block mb-2 text-sm font-medium text-[#000000]">Add Members</label>
+        <div class="relative">
+            <input 
+                #memberSearch 
+                (keyup)="onSearch($event)" 
+                type="text" 
+                id="memberSearch" 
+                placeholder="Search users by email..."
+                class="w-full px-4 py-3 bg-[#f0f2f5] border-0 rounded-xl text-[15px] focus:bg-white focus:ring-2 focus:ring-[#3390ec] focus:outline-none transition-all">
+            <div class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <svg class="w-5 h-5 text-[#707579]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    <div *ngIf="users.length > 0" class="mb-5 max-h-48 overflow-y-auto border border-[#e4e6ea] rounded-xl bg-white">
+        <ul class="divide-y divide-[#e4e6ea]">
+            <li 
+                *ngFor="let user of users" 
+                (click)="appendUser(user)"
+                class="px-4 py-3 cursor-pointer hover:bg-[#f0f2f5] transition-colors flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#3390ec] to-[#2481e0] flex items-center justify-center text-white font-semibold text-sm">
+                    <span>{{ getInitials(user) }}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-[15px] font-medium text-[#000000] truncate">
+                        {{ user.firstName }} {{ user.lastName }}
+                    </p>
+                    <p class="text-xs text-[#707579] truncate">{{ user.email }}</p>
+                </div>
+                <svg class="w-5 h-5 text-[#707579]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+            </li>
+        </ul>
+    </div>
+
+    <p *ngIf="users.length < 1 && searchKey" class="text-sm text-[#707579] mb-5 text-center py-4">
+        No users found
+    </p>
+
+    <!-- Added Members -->
+    <div *ngIf="addedUsers.length > 0" class="mb-5">
+        <p class="text-sm font-medium text-[#000000] mb-3">Selected Members ({{ addedUsers.length }})</p>
+        <div class="flex flex-wrap gap-2">
+            <div 
+                *ngFor="let user of addedUsers" 
+                class="inline-flex items-center gap-2 px-3 py-1.5 bg-[#e7f3ff] border border-[#3390ec]/20 rounded-full">
+                <span class="text-sm font-medium text-[#3390ec]">
+                    {{ user.firstName }} {{ user.lastName }}
+                </span>
+                <button 
+                    (click)="removeUser(user)"
+                    class="text-[#3390ec] hover:text-[#2481e0]">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Button -->
+    <button 
+        (click)="createGroup()" 
+        type="button" 
+        class="w-full py-3 bg-[#3390ec] text-white rounded-xl hover:bg-[#2481e0] transition-colors font-medium text-[15px] shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+        [disabled]="!newGroup.groupName || addedUsers.length === 0">
+        Create Group
+    </button>
+</div>

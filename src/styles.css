@@ -1,0 +1,128 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Telegram Color Palette */
+:root {
+  --tg-primary: #3390ec;
+  --tg-primary-hover: #2481e0;
+  --tg-bg-primary: #ffffff;
+  --tg-bg-secondary: #f7f8fa;
+  --tg-bg-tertiary: #ebedf0;
+  --tg-text-primary: #000000;
+  --tg-text-secondary: #707579;
+  --tg-border: #e4e6ea;
+  --tg-hover: #f0f2f5;
+  --tg-message-sent: #e7f3ff;
+  --tg-message-received: #ffffff;
+  --tg-shadow: rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--tg-bg-secondary);
+  color: var(--tg-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Telegram-style scrollbar */
+.scrollbar-w-2::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-track-blue-lighter::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.scrollbar-thumb-blue::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.scrollbar-thumb-blue::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+}
+
+/* Telegram message bubble styles */
+.message-bubble {
+  border-radius: 12px;
+  padding: 8px 12px;
+  max-width: 70%;
+  word-wrap: break-word;
+  position: relative;
+}
+
+.message-bubble-sent {
+  background-color: var(--tg-primary);
+  color: white;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.message-bubble-received {
+  background-color: var(--tg-message-received);
+  color: var(--tg-text-primary);
+  border: 1px solid var(--tg-border);
+  border-bottom-left-radius: 4px;
+}
+
+/* Telegram input style */
+.telegram-input {
+  background-color: var(--tg-bg-primary);
+  border: 1px solid var(--tg-border);
+  border-radius: 21px;
+  padding: 8px 16px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.telegram-input:focus {
+  border-color: var(--tg-primary);
+  box-shadow: 0 0 0 2px rgba(51, 144, 236, 0.1);
+}
+
+/* Telegram button style */
+.telegram-btn {
+  background-color: var(--tg-primary);
+  color: white;
+  border: none;
+  border-radius: 21px;
+  padding: 8px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.telegram-btn:hover {
+  background-color: var(--tg-primary-hover);
+}
+
+.telegram-btn-secondary {
+  background-color: transparent;
+  color: var(--tg-primary);
+  border: 1px solid var(--tg-primary);
+}
+
+.telegram-btn-secondary:hover {
+  background-color: rgba(51, 144, 236, 0.1);
+}
+
+/* Indicator transition */
+.indicator {
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

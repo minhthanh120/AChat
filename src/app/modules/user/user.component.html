@@ -1,0 +1,104 @@
+<div class="min-h-screen bg-[#f7f8fa] p-6">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-semibold text-[#000000] mb-2">Profile Settings</h1>
+            <p class="text-sm text-[#707579]">Manage your account information and preferences</p>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-[#e4e6ea] p-8 mb-6">
+            <!-- Avatar Section -->
+            <div class="flex flex-col items-center mb-8">
+                <div class="relative mb-4">
+                    <div class="w-32 h-32 rounded-full bg-gradient-to-br from-[#3390ec] to-[#2481e0] flex items-center justify-center text-white text-4xl font-bold overflow-hidden">
+                        <img *ngIf="user?.avatar" [src]="user.avatar" alt="Profile" class="w-full h-full object-cover">
+                        <span *ngIf="!user?.avatar">{{ getUserInitials() }}</span>
+                    </div>
+                    <button class="absolute bottom-0 right-0 w-10 h-10 bg-[#3390ec] text-white rounded-full flex items-center justify-center hover:bg-[#2481e0] transition-colors shadow-lg">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <h2 class="text-xl font-semibold text-[#000000]">{{ user?.firstName }} {{ user?.lastName }}</h2>
+                <p class="text-sm text-[#707579] mt-1">{{ user?.email }}</p>
+                <p class="text-xs text-[#707579] mt-3">Joined {{ user?.joinedDate | date:"MMM dd, yyyy" }}</p>
+            </div>
+
+            <!-- Form -->
+            <form [formGroup]="currentUser" (ngSubmit)="onSubmit()" (change)="onChange()">
+                <input type="text" id="id" name="id" formControlName="id" [hidden]="true">
+
+                <!-- Username -->
+                <div class="mb-5">
+                    <label class="block mb-2 text-sm font-medium text-[#000000]" for="username">Username</label>
+                    <div class="flex">
+                        <span class="inline-flex items-center px-4 text-[15px] text-[#707579] bg-[#f0f2f5] border border-r-0 border-[#e4e6ea] rounded-l-xl">@</span>
+                        <input 
+                            id="username" 
+                            name="username" 
+                            formControlName="userName" 
+                            class="flex-1 px-4 py-3 bg-[#f0f2f5] border border-l-0 border-[#e4e6ea] rounded-r-xl text-[15px] focus:bg-white focus:ring-2 focus:ring-[#3390ec] focus:border-[#3390ec] focus:outline-none transition-all" 
+                            type="text">
+                    </div>
+                </div>
+
+                <!-- Name Fields -->
+                <div class="grid md:grid-cols-2 gap-5 mb-5">
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-[#000000]" for="firstName">First Name</label>
+                        <input 
+                            id="firstName" 
+                            name="firstName" 
+                            formControlName="firstName" 
+                            class="w-full px-4 py-3 bg-[#f0f2f5] border border-[#e4e6ea] rounded-xl text-[15px] focus:bg-white focus:ring-2 focus:ring-[#3390ec] focus:border-[#3390ec] focus:outline-none transition-all" 
+                            type="text">
+                    </div>
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-[#000000]" for="lastName">Last Name</label>
+                        <input 
+                            id="lastName" 
+                            name="lastName" 
+                            formControlName="lastName" 
+                            class="w-full px-4 py-3 bg-[#f0f2f5] border border-[#e4e6ea] rounded-xl text-[15px] focus:bg-white focus:ring-2 focus:ring-[#3390ec] focus:border-[#3390ec] focus:outline-none transition-all" 
+                            type="text">
+                    </div>
+                </div>
+
+                <!-- Contact Fields -->
+                <div class="grid md:grid-cols-2 gap-5 mb-6">
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-[#000000]" for="email">Email</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            formControlName="email" 
+                            name="email" 
+                            class="w-full px-4 py-3 bg-[#f0f2f5] border border-[#e4e6ea] rounded-xl text-[15px] focus:bg-white focus:ring-2 focus:ring-[#3390ec] focus:border-[#3390ec] focus:outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block mb-2 text-sm font-medium text-[#000000]" for="phone">Phone</label>
+                        <input 
+                            id="phone" 
+                            name="phone" 
+                            formControlName="phone" 
+                            class="w-full px-4 py-3 bg-[#f0f2f5] border border-[#e4e6ea] rounded-xl text-[15px] focus:bg-white focus:ring-2 focus:ring-[#3390ec] focus:border-[#3390ec] focus:outline-none transition-all" 
+                            type="tel">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end">
+                    <button 
+                        *ngIf="submitBtn" 
+                        type="submit" 
+                        class="px-6 py-3 bg-[#3390ec] text-white rounded-xl hover:bg-[#2481e0] transition-colors font-medium text-[15px] shadow-md">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
