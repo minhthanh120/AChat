@@ -1,0 +1,68 @@
+<div class="relative h-screen">
+    <div class="h-screen z-0 flex absolute">
+        <div class="flex flex-row w-screen">
+            <div class="relative h-screen 2xl:w-96 xl:w-1/4 bg-white md:w-96 w-full border">
+                <div class="h-20 bg-white shadow-md">
+                    <div class="flex flex-row items-center p-3">
+                        <div class="">
+                            <button type="button" (click)="openmenu()"
+                                class="flex items-center justify-center hover:bg-gray-300 h-10 w-10 rounded-full">
+                                <svg width="24" height="24">
+                                    <path d="M5 6h14M5 12h14M5 18h14" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round"></path>
+                                </svg>
+                            </button>
+                            <div *ngIf="isShow" id="menu" class="z-10 absolute mt-3 bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-fit border">
+                                <a href="/user" class="py-3 text-sm text-gray-900">
+                                  <p *ngIf="haveName" class="font-medium mx-4">{{user["firstName"]+" "+user["lastName"]}}</p>
+                                  <p class="truncate mx-4">{{user["email"]}}</p>
+                                </a>
+                                <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                                  <li>
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-gray-700">Dashboard</a>
+                                  </li>
+                                  <li>
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-gray-700">Contact</a>
+                                  </li>
+                                  <li>
+                                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 text-gray-700">Settings</a>
+                                  </li>
+                                </ul>
+                                <div class="py-2">
+                                  <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"  (click)="logOutOnclick()">Sign out</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="rounded-full hover:bg-gray-300 w-10 h-10 flex justify-center items-center" (click)="formAddGroup()">
+                                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                  </svg>
+                            </button>
+                        </div>
+                        <div class="relative items-center justify-center w-full px-2">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-5 pointer-events-none">
+                                <svg aria-hidden="true" class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
+                            <input
+                                class="block w-full p-3 pl-10 text-sm text-gray-900 border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
+                                type="text" name="searchUser" id="searchUser" placeholder="Search" />
+                        </div>
+    
+                    </div>
+                </div>
+                <app-recent></app-recent>
+            </div>
+            <div class="ml-auto w-full ">
+                <app-message></app-message>
+            </div>
+        </div>
+    </div>
+    <div class="{{openAddGroup? 'z-10':'-z-10'}}  h-screen w-screen inline-flex justify-center bg-slate-500/30 absolute backdrop-blur-sm">
+        <app-addgroup></app-addgroup>
+    </div>
+</div>

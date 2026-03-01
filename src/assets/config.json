@@ -1,0 +1,8 @@
+{
+    "heroesUrl": "api/heroes",
+    "textfile": "assets/textfile.txt",
+    "date": "2020-01-29",
+    "notify":{
+      "url": "http://localhost:5000/chathub"
+    }
+  }
