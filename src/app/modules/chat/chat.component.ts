@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/interface/user';
 import { AuthorizeService } from 'src/app/services/authorize.service';
 import { UserService } from 'src/app/services/user.service';
+import { STORAGE_KEYS } from 'src/assets/app.constants';
 
 @Component({
   selector: 'app-chat',
@@ -27,11 +28,8 @@ export class ChatComponent implements OnInit {
   }
   ngOnInit(): void {
     
-    if (localStorage.getItem(this.authorize.token) != undefined) {
-      this.router.navigate(['/']);
-      let token = localStorage.getItem(this.authorize.token);
-      let object_token = JSON.parse(token!)
-      const access_token = object_token.access_token;
+    if (localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN) != undefined) {
+      const access_token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
       this.userService.getCurrentUser(access_token).subscribe(data => {
         this.user = data;
         if (this.user.firstName != null && this.user.lastName != null) {

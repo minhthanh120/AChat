@@ -7,6 +7,7 @@ import { Buffer } from 'buffer';
 import { HttpErrorHandler, HandleError } from './http-error-handler.service';
 import { enviroment } from 'src/assets/enviroments';
 import { Token } from '../interface/token';
+import { STORAGE_KEYS } from 'src/assets/app.constants';
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type': 'application/json',
@@ -39,7 +40,7 @@ export class AuthorizeService {
           if (res.refresh_token == undefined) {
             throw new Error(res.detail);
           }
-          localStorage.setItem(this.token, JSON.stringify(res));
+          localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, JSON.stringify(res));
 
           return this.token;
         }),
@@ -48,37 +49,28 @@ export class AuthorizeService {
   }
 
   login(login: Login) {
-    const body = new HttpParams()
-      .set('username', login.email.toString())
-      .set('password', login.password.toString())
-      .set('grant_type', 'password');
-
-    const OAUTH_CLIENT = 'express-client';
-    const OAUTH_SECRET = 'express-secret';
+    const body = {
+      username: login.email,
+      password: login.password
+    }
 
     const HTTP_OPTIONS = {
       headers: new HttpHeaders({
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/json'
         //,
         //Authorization: 'Basic ' + Buffer.from(OAUTH_CLIENT + ':' + OAUTH_SECRET).toString('base64')
       })
     };
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-urlencoded'
-    })
     const subdomain = "/login";
     return this.http.post<any>(enviroment.backendServer + subdomain, body, HTTP_OPTIONS)
       .pipe(
         map(
           (res) => {
-            if (res.refresh_token == undefined) {
-              console.log(res.detail)
+            if (res.data.accessToken == undefined) {
               return throwError(res.detail);
             }
-
-            console.log(res)
-            localStorage.setItem(this.token, JSON.stringify(res));
+            localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, res.data.accessToken);
             return this.token;
           }
         ),
@@ -87,7 +79,7 @@ export class AuthorizeService {
 
   }
   logOut() {
-    localStorage.removeItem(this.token);
+    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
   }
 
   // GetUserName() {

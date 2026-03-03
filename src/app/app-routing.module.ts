@@ -1,28 +1,35 @@
+// Angular imports
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
+
+// App imports
+import { ChatComponent } from './modules/chat/chat.component';
+import { MessageComponent } from './modules/chat/message/message.component';
 import { LoginComponent } from './modules/login/login.component';
 import { RegisterComponent } from './modules/register/register.component';
-import { ChatComponent } from './modules/chat/chat.component';
 import { UserComponent } from './modules/user/user.component';
 import { PagenotfoundComponent } from './pagenotfound/pagenotfound.component';
-import { MessageComponent } from './modules/chat/message/message.component';
 
-const routes:Routes=[
-  {path:'login', component:LoginComponent},
-  {path:'register', component:RegisterComponent},
-  {path:'', component:ChatComponent},
-  {path:'user', component:UserComponent},
-  {path:'**', component:PagenotfoundComponent},
-  {path:'message/:id', component:MessageComponent}
-]
+const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'user', component: UserComponent },
+
+  {
+    path: '',
+    component: ChatComponent,
+    children: [
+      { path: 'message/:id', component: MessageComponent }
+    ]
+  },
+
+  { path: '**', component: PagenotfoundComponent }
+];
 
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    RouterModule.forRoot(routes),
-  ],
-  exports:[RouterModule]
+  imports: [CommonModule, RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

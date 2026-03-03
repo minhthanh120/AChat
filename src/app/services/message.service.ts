@@ -1,21 +1,24 @@
 import { Injectable } from '@angular/core';
+import { Message } from '../interface/message';
+import { enviroment } from 'src/assets/enviroments';
+import { HttpClient } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
 
 @Injectable()
 export class MessageService {
-  messages: string[] = [];
 
-  add(message: string) {
-    this.messages.push(message);
+  constructor(private http: HttpClient) {
+
+  }
+  add(message: Message) {
+    this.http.post<any>(enviroment.backendServer + '/conversation/send-message', message).pipe(
+      catchError(error => {
+        console.error(error);
+        return throwError(() => error);
+      })
+    );
   }
 
   clear() {
-    this.messages = [];
   }
 }
-
-
-/*
-Copyright 2017-2018 Google Inc. All Rights Reserved.
-Use of this source code is governed by an MIT-style license that
-can be found in the LICENSE file at http://angular.io/license
-*/

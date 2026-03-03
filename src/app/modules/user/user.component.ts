@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { catchError } from 'rxjs';
 import { AuthorizeService } from 'src/app/services/authorize.service';
 import { UserService } from 'src/app/services/user.service';
+import { STORAGE_KEYS } from 'src/assets/app.constants';
 
 @Component({
   selector: 'app-user',
@@ -21,9 +22,7 @@ export class UserComponent implements OnInit {
 
   }
   ngOnInit(): void {
-    let token = localStorage.getItem(this.authorize.token);
-    let object_token = JSON.parse(token!);
-    const access_token = object_token.access_token;
+    const access_token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
     this.userService.getCurrentUser(access_token).subscribe();
     const localUser = localStorage.getItem("user");
     this.user = JSON.parse(localUser!);
@@ -42,9 +41,7 @@ export class UserComponent implements OnInit {
     console.log(this.currentUser.getRawValue());
     this.userService.updateUserInfo(this.currentUser.getRawValue())
       .subscribe();
-    let token = localStorage.getItem(this.authorize.token);
-    let object_token = JSON.parse(token!)
-    const access_token = object_token.access_token;
+    const access_token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
     this.userService.getCurrentUser(access_token!).subscribe();
   }
   onChange() {
