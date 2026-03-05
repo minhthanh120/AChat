@@ -41,94 +41,30 @@
     </div>
 
     <!-- Messages Container -->
-    <div 
+    <div
+        #messagesContainer
         id="messages"
         class="flex-1 overflow-y-auto px-4 py-4 space-y-4 scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2">
-        
-        <!-- Date Divider -->
-        <div class="flex justify-center my-6">
-            <span class="px-3 py-1 bg-[#e4e6ea] text-[#707579] text-xs font-medium rounded-full">
-                January 1, 2023
-            </span>
+
+        <div *ngIf="messages.length === 0" class="text-center text-sm text-[#707579] py-8">
+            No messages yet.
         </div>
 
-        <!-- Received Message -->
-        <div class="flex items-end gap-2 max-w-[70%]">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#3390ec] to-[#2481e0] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
-                <span>AB</span>
+        <div
+            *ngFor="let item of messages"
+            class="flex items-end gap-2 max-w-[70%]"
+            [class.ml-auto]="item.isMine">
+            <div
+                *ngIf="!item.isMine"
+                class="w-8 h-8 rounded-full bg-gradient-to-br from-[#3390ec] to-[#2481e0] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
+                <span>{{ item.user?.charAt(0) || 'U' }}</span>
             </div>
-            <div class="message-bubble message-bubble-received">
-                <p class="text-[15px] leading-relaxed">Hey! How are you doing today?</p>
-                <div class="flex items-center justify-end gap-1.5 mt-1">
-                    <span class="text-xs text-[#707579]">11:24 AM</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sent Message -->
-        <div class="flex items-end gap-2 max-w-[70%] ml-auto">
-            <div class="message-bubble message-bubble-sent">
-                <p class="text-[15px] leading-relaxed">I'm doing great! Thanks for asking. How about you?</p>
+            <div [class]="item.isMine ? 'message-bubble message-bubble-sent' : 'message-bubble message-bubble-received'">
+                <p class="text-[15px] leading-relaxed whitespace-pre-wrap">{{ item.message }}</p>
                 <div class="flex items-center justify-end gap-1 mt-1">
-                    <span class="text-xs text-white/80">11:25 AM</span>
-                    <svg class="w-4 h-4 text-white/80" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <!-- Received Message with Image -->
-        <div class="flex items-end gap-2 max-w-[70%]">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#3390ec] to-[#2481e0] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0">
-                <span>AB</span>
-            </div>
-            <div class="message-bubble message-bubble-received p-0 overflow-hidden">
-                <img src="https://via.placeholder.com/300x200" alt="Shared image" class="w-full max-w-[280px] rounded-t-xl">
-                <div class="p-3">
-                    <p class="text-[15px] leading-relaxed">Check out this amazing view!</p>
-                    <div class="flex items-center justify-end gap-1.5 mt-1">
-                        <span class="text-xs text-[#707579]">11:30 AM</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sent Message -->
-        <div class="flex items-end gap-2 max-w-[70%] ml-auto">
-            <div class="message-bubble message-bubble-sent">
-                <p class="text-[15px] leading-relaxed">Wow, that's beautiful! Where is this?</p>
-                <div class="flex items-center justify-end gap-1 mt-1">
-                    <span class="text-xs text-white/80">11:31 AM</span>
-                    <svg class="w-4 h-4 text-white/80" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-
-        <!-- Received Message -->
-        <div class="flex items-end gap-2 max-w-[70%]">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-[#3390ec] to-[#2481e0] flex items-center justify-center text-white text-xs font-semibold flex-shrink-0 opacity-0">
-                <span>AB</span>
-            </div>
-            <div class="message-bubble message-bubble-received">
-                <p class="text-[15px] leading-relaxed">It's from my recent trip to the mountains. We should go there together sometime!</p>
-                <div class="flex items-center justify-end gap-1.5 mt-1">
-                    <span class="text-xs text-[#707579]">11:32 AM</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Sent Message -->
-        <div class="flex items-end gap-2 max-w-[70%] ml-auto">
-            <div class="message-bubble message-bubble-sent">
-                <p class="text-[15px] leading-relaxed">That sounds like an amazing plan! Let's do it! 🎉</p>
-                <div class="flex items-center justify-end gap-1 mt-1">
-                    <span class="text-xs text-white/80">11:33 AM</span>
-                    <svg class="w-4 h-4 text-white/60" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/>
-                    </svg>
+                    <span class="text-xs" [class]="item.isMine ? 'text-white/80' : 'text-[#707579]'">
+                        {{ formatTime(item.createdAt) }}
+                    </span>
                 </div>
             </div>
         </div>
@@ -147,13 +83,16 @@
             <!-- Input Field -->
             <div class="flex-1 relative">
                 <textarea 
+                    #messageInput
                     [(ngModel)]="messageText"
+                    (input)="onMessageInput()"
+                    (keydown)="onMessageKeyDown($event)"
                     id="message" 
                     type="text" 
                     maxlength="4096"
                     rows="1"
                     placeholder="Type a message..."
-                    class="w-full px-4 py-2.5 pr-12 bg-[#f0f2f5] border-0 rounded-[21px] resize-none focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#3390ec] transition-all text-[15px] leading-relaxed max-h-[200px] overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2"
+                    class="w-full px-4 py-2.5 pr-12 bg-[#f0f2f5] border-0 rounded-[21px] resize-none focus:outline-none focus:bg-white focus:ring-2 focus:ring-[#3390ec] transition-all text-[15px] leading-relaxed scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2"
                     style="min-height: 42px;"></textarea>
             </div>
 

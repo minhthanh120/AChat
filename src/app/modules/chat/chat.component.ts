@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from 'src/app/interface/user';
 import { AuthorizeService } from 'src/app/services/authorize.service';
+import { SignalRService } from 'src/app/services/signalr.service';
 import { UserService } from 'src/app/services/user.service';
 import { STORAGE_KEYS } from 'src/assets/app.constants';
 
@@ -23,7 +24,7 @@ export class ChatComponent implements OnInit {
   /**
    *
    */
-  constructor(private authorize: AuthorizeService, private userService: UserService, private router: Router) {
+  constructor(private authorize: AuthorizeService, private userService: UserService, private router: Router, private signalRService: SignalRService) {
     //this.ngOnInit();
   }
   ngOnInit(): void {
@@ -36,6 +37,8 @@ export class ChatComponent implements OnInit {
           this.haveName = true;
         }
       });
+      this.signalRService.startConnection();
+      this.signalRService.addMessageListener();
     }
     else {
       console.log('not authorize');

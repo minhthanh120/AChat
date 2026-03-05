@@ -14,3 +14,12 @@
   animation: slideInRight 0.3s ease-out;
 }
 
+.notif-message {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  word-break: break-word;
+}
+

@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit {
         next: () => {
           this.router.navigate(['']);
           this.signalRService.startConnection();
+          this.signalRService.addMessageListener();
         },
         error: err => {
           console.log(err);

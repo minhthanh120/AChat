@@ -1,50 +1,32 @@
+// Angular imports
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { Observable, of, throwError } from 'rxjs';
-import { catchError, delay, retry, map } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+// RxJS imports
+import { Observable, throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+// App imports
 import { Login } from '../interface/login';
-import { Buffer } from 'buffer';
-import { HttpErrorHandler, HandleError } from './http-error-handler.service';
-import { enviroment } from 'src/assets/enviroments';
-import { Token } from '../interface/token';
 import { STORAGE_KEYS } from 'src/assets/app.constants';
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Credentials': 'true',
-    'Access-Control-Allow-Headers': '*',
-    'Access-Control-Allow-Methods': '*',
-    'key': 'x-api-key',
-  })
-};
+import { enviroment } from 'src/assets/enviroments';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthorizeService {
-
-  //isLoggedIn: boolean = false;
-  response: string = '';
-
+  private readonly refreshEndpoint = '/refresh-token';
   public token: any;
-  //private handleError: HandleError;
-  constructor(private http: HttpClient,) {
-    //this.handleError = httpErrorHandler.createHandleError('AuthorizeService');
-  }
+
+  constructor(private http: HttpClient) {}
 
   register(register: any) {
     const subdomain = "/register";
     return this.http.post<any>(enviroment.backendServer + subdomain, register)
       .pipe(
         map((res) => {
-          if (res.refresh_token == undefined) {
-            throw new Error(res.detail);
-          }
-          localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, JSON.stringify(res));
-
+          this.persistTokensFromResponse(res);
           return this.token;
         }),
-        catchError(err=>of([]))
       );
   }
 
@@ -62,24 +44,63 @@ export class AuthorizeService {
       })
     };
 
-    const subdomain = "/login";
+    const subdomain = '/login';
     return this.http.post<any>(enviroment.backendServer + subdomain, body, HTTP_OPTIONS)
       .pipe(
-        map(
-          (res) => {
-            if (res.data.accessToken == undefined) {
-              return throwError(res.detail);
-            }
-            localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, res.data.accessToken);
-            return this.token;
-          }
-        ),
+        map((res) => {
+          this.persistTokensFromResponse(res);
+          return this.token;
+        }),
       )
-      
-
   }
-  logOut() {
+
+  refreshToken(): Observable<string> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      return throwError(() => new Error('Missing refresh token'));
+    }
+
+    return this.http
+      .post<any>(`${enviroment.backendServer}${this.refreshEndpoint}`, { refreshToken })
+      .pipe(
+        map((res) => {
+          this.persistTokensFromResponse(res);
+          const latestAccessToken = this.getAccessToken();
+          if (!latestAccessToken) {
+            throw new Error('Refresh token response missing access token');
+          }
+          return latestAccessToken;
+        })
+      );
+  }
+
+  getAccessToken(): string | null {
+    return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+  }
+
+  logOut(): void {
     localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
+  }
+
+  private persistTokensFromResponse(res: any): void {
+    const data = res?.data ?? res;
+    const accessToken = data?.accessToken ?? data?.access_token;
+    const refreshToken = data?.refreshToken ?? data?.refresh_token;
+
+    if (!accessToken) {
+      throw new Error(res?.detail || 'Missing access token');
+    }
+
+    localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
+
+    if (refreshToken) {
+      localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
+    }
   }
 
   // GetUserName() {

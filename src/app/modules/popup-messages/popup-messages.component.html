@@ -1,12 +1,11 @@
 <div id="toast-container" class="fixed flex flex-col gap-3 top-5 right-5 z-50 max-w-sm w-full">
-    <div 
-        *ngFor="let notif of push; let i = index"
+    <div *ngFor="let notif of push; let i = index"
         class="bg-white rounded-xl shadow-2xl border border-[#e4e6ea] p-4 animate-slide-in-right relative">
         <!-- Close Button -->
-        <button
-            (click)="dismissNotification(i)"
+        <button (click)="dismissNotification(i)"
             class="absolute top-3 right-3 w-6 h-6 flex items-center justify-center rounded-full hover:bg-[#f0f2f5] transition-colors text-[#707579]">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
                 <line x1="18" y1="6" x2="6" y2="18"></line>
                 <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -15,14 +14,20 @@
         <!-- Notification Content -->
         <div class="pr-6">
             <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#3390ec] to-[#2481e0] flex items-center justify-center text-white font-semibold flex-shrink-0">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
+                <div
+                    class="w-10 h-10 rounded-full bg-gradient-to-br from-[#3390ec] to-[#2481e0] flex items-center justify-center text-white font-semibold flex-shrink-0">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z">
+                        </path>
                     </svg>
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="text-[15px] font-medium text-[#000000] mb-1">New Message</p>
-                    <p class="text-sm text-[#707579] leading-relaxed">{{ notif.message }}</p>
+                    <p class="text-sm text-[#707579] leading-relaxed notif-message">
+                        {{ notif.message }}
+                    </p>
                 </div>
             </div>
         </div>

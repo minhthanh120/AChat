@@ -1,20 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+
 import { Notif } from 'src/app/interface/notification';
+import { PopupMessagesService } from 'src/app/services/popup-messages.service';
 
 @Component({
   selector: 'app-popup-messages',
   templateUrl: './popup-messages.component.html',
   styleUrls: ['./popup-messages.component.css']
 })
-export class PopupMessagesComponent {
-  push: Notif[] = [
-    // {title:'Warning', type:1, message:'You are not logging yet'},
-    // {title:'Error', type:2, message:'Your account/password not match with any user'},
-    // {title:'Success', type:3, message:'Logging successful'},
-    // {title:'Infomation', type:3, message:'Custom message'},
-  ]
+export class PopupMessagesComponent implements OnInit, OnDestroy {
+  push: Notif[] = [];
+  private sub?: Subscription;
 
-  dismissNotification(index: number) {
-    this.push.splice(index, 1);
+  constructor(private popupService: PopupMessagesService) {}
+
+  ngOnInit(): void {
+    this.sub = this.popupService.notifications$.subscribe(data => {
+      this.push = data;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
+  }
+
+  dismissNotification(index: number): void {
+    this.popupService.removeAt(index);
   }
 }
