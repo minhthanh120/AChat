@@ -26,7 +26,7 @@ export class UserService {
       }));
   }
   getRecentMessage(token: string) {
-    const subdomain = '/group/recentmessage';
+    const subdomain = '/conversation/recent-messages';
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',

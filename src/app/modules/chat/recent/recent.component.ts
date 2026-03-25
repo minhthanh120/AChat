@@ -1,19 +1,29 @@
-import { Component } from '@angular/core';
+// Angular imports
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+
+// App imports
 import { SpinnerService } from 'src/app/services/spinner.service';
+import { UserService } from 'src/app/services/user.service';
+import { STORAGE_KEYS } from 'src/assets/app.constants';
 
 @Component({
   selector: 'app-recent',
   templateUrl: './recent.component.html',
   styleUrls: ['./recent.component.css']
 })
-export class RecentComponent {
-  chats: any[] = []; // Will be populated from service
+export class RecentComponent implements OnInit {
+  chats: any[] = [];
 
   constructor(
     private router: Router,
+    private userService: UserService,
     public spinnerService: SpinnerService
   ) {}
+
+  ngOnInit(): void {
+    this.loadRecentMessages();
+  }
 
   onSelect(chatId: string = '') {
     this.router.navigate(['/message', chatId]);
@@ -44,5 +54,40 @@ export class RecentComponent {
     } else {
       return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     }
+  }
+
+  private loadRecentMessages(): void {
+    const token = localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
+    if (!token) {
+      this.chats = [];
+      return;
+    }
+
+    this.userService.getRecentMessage(token).subscribe({
+      next: (res) => {
+        const rawItems = this.extractRecentItems(res);
+        this.chats = rawItems.map((item: any) => ({
+          id: item.id || item.conversationId || '',
+          name: item.name || item.conversationName || item.title || 'Unknown',
+          lastMessage: item.lastMessage || item.message || '',
+          lastMessageTime: item.lastMessageTime || item.updatedAt || item.createdAt,
+          unreadCount: item.unreadCount || 0,
+          avatar: item.avatar || item.imageUrl || null,
+          isOnline: !!item.isOnline,
+        }));
+      },
+      error: (error) => {
+        console.error(error);
+        this.chats = [];
+      }
+    });
+  }
+
+  private extractRecentItems(res: any): any[] {
+    if (Array.isArray(res)) return res;
+    if (Array.isArray(res?.data)) return res.data;
+    if (Array.isArray(res?.items)) return res.items;
+    if (Array.isArray(res?.result)) return res.result;
+    return [];
   }
 }

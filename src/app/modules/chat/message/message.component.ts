@@ -10,6 +10,7 @@ import { MessageService } from 'src/app/services/message.service';
 import { SignalRService } from 'src/app/services/signalr.service';
 
 interface ChatMessageItem {
+  senderId?: string;
   user: string;
   message: string;
   createdAt: Date;
@@ -27,6 +28,8 @@ export class MessageComponent implements OnInit, OnDestroy, AfterViewInit {
    *
    */
   public id: string = '';
+  private readonly historyPage = 1;
+  private readonly historyPageSize = 30;
   private routeSub?: Subscription;
   private messageReceivedSub?: Subscription;
   public messageText: string = '';
@@ -43,7 +46,11 @@ export class MessageComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   ngOnInit() {
     this.routeSub = this.route.params.subscribe(params => {
-      this.id = params['id'];
+      this.id = params['id'] || '';
+      this.messages = [];
+      if (this.id) {
+        this.loadConversationMessages(this.id);
+      }
     });
     this.messageReceivedSub = this.signalRService.messageReceived$.subscribe(({ user, message }) => {
       this.appendMessage({
@@ -156,6 +163,62 @@ export class MessageComponent implements OnInit, OnDestroy, AfterViewInit {
   private appendMessage(message: ChatMessageItem): void {
     this.messages = [...this.messages, message];
     requestAnimationFrame(() => this.scrollToBottom());
+  }
+
+  private loadConversationMessages(conversationId: string): void {
+    this.messageService.getConversationMessages(conversationId, this.historyPage, this.historyPageSize).subscribe({
+      next: (res) => {
+        const rawMessages = this.extractMessageList(res);
+        this.messages = rawMessages.map((item: any) => this.mapToChatMessage(item));
+        requestAnimationFrame(() => this.scrollToBottom());
+      },
+      error: (error: any) => {
+        console.log(error);
+        this.messages = [];
+      }
+    });
+  }
+
+  private extractMessageList(res: any): any[] {
+    if (Array.isArray(res)) return res;
+    if (Array.isArray(res?.data)) return res.data;
+    if (Array.isArray(res?.items)) return res.items;
+    if (Array.isArray(res?.result)) return res.result;
+    if (Array.isArray(res?.data?.items)) return res.data.items;
+    return [];
+  }
+
+  private mapToChatMessage(item: any): ChatMessageItem {
+    const senderId = String(item.senderId || item.userId || item.fromUserId || '');
+    const senderName = item.senderName || item.userName || item.user || item.fromUserName || 'User';
+    const message = item.message || item.content || '';
+    const createdAtRaw = item.createdAt || item.createdDate || item.sentAt || item.timestamp;
+    const createdAt = createdAtRaw ? new Date(createdAtRaw) : new Date();
+
+    return {
+      senderId,
+      user: senderName,
+      message,
+      createdAt,
+      isMine: this.isCurrentUser(senderId, item),
+    };
+  }
+
+  private isCurrentUser(senderId: string, item: any): boolean {
+    if (typeof item.isMine === 'boolean') {
+      return item.isMine;
+    }
+
+    const userRaw = localStorage.getItem('user');
+    if (!userRaw) return false;
+
+    try {
+      const user = JSON.parse(userRaw);
+      const currentUserId = String(user?.id || user?.userId || user?.sub || '');
+      return !!currentUserId && currentUserId === senderId;
+    } catch {
+      return false;
+    }
   }
 
   private scrollToBottom(): void {
